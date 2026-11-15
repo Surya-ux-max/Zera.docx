@@ -180,26 +180,35 @@ h2,
    Ordered styles for letter-by-letter spring animation and joining effect
    ========================================================================== */
 .kinetic-jump-container {
-  display: flex;
+  display: inline-flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  column-gap: 0.65rem;
-  row-gap: 0.25rem;
   user-select: none;
+  overflow: visible;
 }
 
 .kinetic-word {
-  display: inline-flex;
-  align-items: center;
-  overflow: visible;
+  display: inline-block;
   white-space: nowrap;
+  overflow: visible;
+  margin-right: 0.3em;
+}
+
+.kinetic-word:last-child {
+  margin-right: 0;
 }
 
 .kinetic-char {
   display: inline-block;
   will-change: transform, opacity;
   transform-origin: center bottom;
+}
+
+@media (max-width: 640px) {
+  .kinetic-word {
+    margin-right: 0.22em;
+  }
 }
 
 /* Custom scrollbar */
