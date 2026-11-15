@@ -434,9 +434,11 @@ export const GravityShapesCanvas = () => {
       const pos = getPos(e);
       const shapes = stateRef.current.shapes;
 
+      let hit = false;
       for (let i = shapes.length - 1; i >= 0; i--) {
         const s = shapes[i];
         if (isHit(pos, s)) {
+          hit = true;
           s.isDragging = true;
           s.vx = 0;
           s.vy = 0;
@@ -444,8 +446,13 @@ export const GravityShapesCanvas = () => {
           stateRef.current.dragOffset = { x: pos.x - s.x, y: pos.y - s.y };
           stateRef.current.lastMouse = { x: pos.x, y: pos.y, time: performance.now() };
           canvas.style.cursor = 'grabbing';
+          canvas.style.touchAction = 'none'; // Lock touch action only while actively dragging a shape
           break;
         }
+      }
+
+      if (!hit) {
+        canvas.style.touchAction = 'pan-y'; // Allow normal vertical touch scroll
       }
     };
 
@@ -480,6 +487,7 @@ export const GravityShapesCanvas = () => {
         stateRef.current.draggedShape = null;
         canvas.style.cursor = 'grab';
       }
+      canvas.style.touchAction = 'pan-y'; // Always restore pan-y on release for silky mobile scrolling
     };
 
     window.addEventListener('resize', initOrResizeCanvas);
@@ -510,7 +518,7 @@ export const GravityShapesCanvas = () => {
     <canvas
       ref={canvasRef}
       className="absolute inset-0 w-full h-full pointer-events-auto z-10"
-      style={{ touchAction: 'none' }}
+      style={{ touchAction: 'pan-y' }}
     />
   );
 };
