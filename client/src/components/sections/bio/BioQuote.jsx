@@ -21,9 +21,9 @@ export const BioQuote = () => {
       >
         <span className="text-[var(--color-muted)] font-serif italic font-normal">“</span>
         <span>I am a</span>
-        <span className="relative inline-block text-[#5B95F9]">
+        <span className="relative inline-block text-[var(--color-blue)]">
           Computer Science
-          <span className="absolute -bottom-1 left-0 right-0 h-1 sm:h-2 rounded-full bg-[#5B95F9]/20" />
+          <span className="absolute -bottom-1 left-0 right-0 h-1 sm:h-2 rounded-full bg-[var(--color-blue)]/20" />
         </span>
         <span>Student</span>
         <span className="text-[var(--color-muted)] font-serif italic font-normal">”</span>
