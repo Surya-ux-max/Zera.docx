@@ -209,6 +209,7 @@ export const GravityShapesCanvas = () => {
 
     const gravity = 0.36;
     const friction = 0.985;
+    const angularDamping = 0.92;
     const floorBounce = 0.7;
 
     // Helper: Draw rounded hexagon
@@ -276,7 +277,10 @@ export const GravityShapesCanvas = () => {
 
           s.vx *= friction;
           s.vy *= friction;
-          s.vAngle *= friction;
+          s.vAngle *= angularDamping;
+
+          // Clamp angular velocity to keep rotation subtle and stable
+          s.vAngle = Math.max(-0.025, Math.min(0.025, s.vAngle));
 
           const r = s.hitRadius;
 
@@ -285,6 +289,7 @@ export const GravityShapesCanvas = () => {
             s.y = h - r;
             s.vy = -s.vy * floorBounce;
             s.vx *= 0.94;
+            s.vAngle *= 0.8;
             if (Math.abs(s.vy) < 0.4) s.vy = 0;
           }
 
@@ -292,18 +297,21 @@ export const GravityShapesCanvas = () => {
           if (s.y - r < 0) {
             s.y = r;
             s.vy = -s.vy * floorBounce;
+            s.vAngle *= 0.8;
           }
 
           // Left wall
           if (s.x - r < 0) {
             s.x = r;
             s.vx = -s.vx * floorBounce;
+            s.vAngle *= 0.8;
           }
 
           // Right wall
           if (s.x + r > w) {
             s.x = w - r;
             s.vx = -s.vx * floorBounce;
+            s.vAngle *= 0.8;
           }
         }
       });
@@ -355,13 +363,13 @@ export const GravityShapesCanvas = () => {
               if (!s1.isDragging) {
                 s1.vx -= ix / s1.mass;
                 s1.vy -= iy / s1.mass;
-                s1.vAngle -= (nx * vRelY - ny * vRelX) * 0.012;
+                s1.vAngle -= (nx * vRelY - ny * vRelX) * 0.0025;
               }
 
               if (!s2.isDragging) {
                 s2.vx += ix / s2.mass;
                 s2.vy += iy / s2.mass;
-                s2.vAngle += (nx * vRelY - ny * vRelX) * 0.012;
+                s2.vAngle += (nx * vRelY - ny * vRelX) * 0.0025;
               }
             }
           }
@@ -468,7 +476,7 @@ export const GravityShapesCanvas = () => {
         dragged.isDragging = false;
         dragged.vx = stateRef.current.mouseVelocity.x * 0.85;
         dragged.vy = stateRef.current.mouseVelocity.y * 0.85;
-        dragged.vAngle = (stateRef.current.mouseVelocity.x || 0.1) * 0.015;
+        dragged.vAngle = Math.max(-0.02, Math.min(0.02, (stateRef.current.mouseVelocity.x || 0) * 0.003));
         stateRef.current.draggedShape = null;
         canvas.style.cursor = 'grab';
       }
