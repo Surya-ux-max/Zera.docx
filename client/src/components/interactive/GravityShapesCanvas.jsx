@@ -76,18 +76,7 @@ export const GravityShapesCanvas = () => {
         const spacing = isMobile ? (w - 40) / count : shapeSize + 12;
         const startX = isMobile ? 30 : Math.max(halfSize + 20, (w - shapeSize * 5) / 2);
 
-        const shapeDefs = [
-          // 0. Huge Organic Green Shape (Colossal, interactive, and movable)
-          {
-            type: 'huge-blob',
-            width: 580 * baseScale,
-            height: 500 * baseScale,
-            hitRadius: 260 * baseScale,
-            color: palette.green,
-            x: isMobile ? w * 0.5 : w * 0.74,
-            y: isMobile ? h * 0.38 : h * 0.42,
-            mass: 12.0
-          },
+        const allShapeDefs = [
           // 1. Bright Green Rounded Square
           {
             type: 'square',
@@ -95,7 +84,7 @@ export const GravityShapesCanvas = () => {
             cornerRadius: 36 * baseScale,
             hitRadius: halfSize,
             color: palette.green,
-            x: isMobile ? w * 0.15 : startX,
+            x: startX,
             y: floorBaseline - halfSize,
             mass: 3.2
           },
@@ -106,8 +95,8 @@ export const GravityShapesCanvas = () => {
             cornerRadius: 22 * baseScale,
             hitRadius: 76 * baseScale,
             color: palette.green,
-            x: isMobile ? w * 0.18 : startX,
-            y: isMobile ? floorBaseline - halfSize * 2 - 20 : floorBaseline - shapeSize - (76 * baseScale) - 8,
+            x: startX + spacing * 0.9,
+            y: floorBaseline - (76 * baseScale),
             mass: 2.8
           },
           // 3. Pastel Pink Rounded Square
@@ -117,7 +106,7 @@ export const GravityShapesCanvas = () => {
             cornerRadius: 38 * baseScale,
             hitRadius: halfSize,
             color: palette.pink,
-            x: isMobile ? w * 0.42 : startX + spacing,
+            x: startX + spacing * 1.8,
             y: floorBaseline - halfSize,
             mass: 3.2
           },
@@ -128,8 +117,8 @@ export const GravityShapesCanvas = () => {
             cornerRadius: 24 * baseScale,
             hitRadius: 78 * baseScale,
             color: palette.orange,
-            x: isMobile ? w * 0.45 : startX + spacing * 0.9,
-            y: isMobile ? floorBaseline - halfSize * 2 - 30 : floorBaseline - shapeSize - (78 * baseScale) - 10,
+            x: startX + spacing * 2.7,
+            y: floorBaseline - (78 * baseScale),
             mass: 2.9
           },
           // 5. Google Blue Solid Circle
@@ -138,7 +127,7 @@ export const GravityShapesCanvas = () => {
             radius: 76 * baseScale,
             hitRadius: 76 * baseScale,
             color: palette.blue,
-            x: isMobile ? w * 0.72 : startX + spacing * 2,
+            x: startX + spacing * 3.6,
             y: floorBaseline - (76 * baseScale),
             mass: 3.0
           },
@@ -148,7 +137,7 @@ export const GravityShapesCanvas = () => {
             size: 156 * baseScale,
             hitRadius: 78 * baseScale,
             color: palette.yellow,
-            x: isMobile ? w * 0.82 : startX + spacing * 3,
+            x: startX + spacing * 4.5,
             y: floorBaseline - (78 * baseScale),
             mass: 3.1
           },
@@ -158,32 +147,38 @@ export const GravityShapesCanvas = () => {
             radius: 78 * baseScale,
             hitRadius: 78 * baseScale,
             color: palette.blue,
-            x: isMobile ? w * 0.9 : startX + spacing * 4,
-            y: isMobile ? floorBaseline - (78 * baseScale) - 40 : floorBaseline - (78 * baseScale) - 30,
+            x: startX + spacing * 5.4,
+            y: floorBaseline - (78 * baseScale),
             mass: 3.0
           }
         ];
 
-        stateRef.current.shapes = shapeDefs.map((def, idx) => ({
+        // On mobile: 4 curated, peaceful shapes; on desktop: all 7 shapes
+        const mobileShapes = [allShapeDefs[0], allShapeDefs[2], allShapeDefs[4], allShapeDefs[5]];
+        const activeDefs = isMobile ? mobileShapes : allShapeDefs;
+
+        const total = activeDefs.length;
+        const mobileSpacing = (w - 40) / Math.max(total, 1);
+        const mobileStartX = isMobile ? 30 : startX;
+
+        stateRef.current.shapes = activeDefs.map((def, idx) => ({
           ...def,
           id: idx,
+          x: isMobile ? mobileStartX + idx * mobileSpacing : def.x,
           baseScale,
           vx: 0,
           vy: 0,
           angle: 0,
           vAngle: 0,
           isDragging: false,
-          restitution: 0.82
+          isAtRest: true, // Calm and motionless on load; only moves when interacted
+          restitution: 0.25
         }));
       } else {
         // Update shape sizes and hitRadii on screen resize
         stateRef.current.shapes.forEach((s) => {
           s.baseScale = baseScale;
-          if (s.type === 'huge-blob') {
-            s.width = 580 * baseScale;
-            s.height = 500 * baseScale;
-            s.hitRadius = 260 * baseScale;
-          } else if (s.type === 'square') {
+          if (s.type === 'square') {
             s.size = shapeSize;
             s.cornerRadius = 36 * baseScale;
             s.hitRadius = halfSize;
@@ -207,10 +202,10 @@ export const GravityShapesCanvas = () => {
 
     initOrResizeCanvas();
 
-    const gravity = 0.36;
-    const friction = 0.985;
-    const angularDamping = 0.92;
-    const floorBounce = 0.7;
+    const gravity = 0.32;
+    const friction = 0.95;
+    const angularDamping = 0.78;
+    const floorBounce = 0.22;
 
     // Helper: Draw rounded hexagon
     const drawRoundedHexagon = (c, r, cr) => {
@@ -268,7 +263,7 @@ export const GravityShapesCanvas = () => {
 
       // 1. Move & Canvas Edge Bounds
       shapes.forEach((s) => {
-        if (!s.isDragging) {
+        if (!s.isDragging && !s.isAtRest) {
           s.vy += gravity;
 
           s.x += s.vx;
@@ -279,39 +274,47 @@ export const GravityShapesCanvas = () => {
           s.vy *= friction;
           s.vAngle *= angularDamping;
 
-          // Clamp angular velocity to keep rotation subtle and stable
-          s.vAngle = Math.max(-0.025, Math.min(0.025, s.vAngle));
+          // Clamped subtle rotation
+          s.vAngle = Math.max(-0.012, Math.min(0.012, s.vAngle));
 
           const r = s.hitRadius;
 
-          // Bottom floor
-          if (s.y + r > h) {
+          // Bottom floor (gentle muted bounce; settles to rest quickly)
+          if (s.y + r >= h) {
             s.y = h - r;
             s.vy = -s.vy * floorBounce;
-            s.vx *= 0.94;
-            s.vAngle *= 0.8;
-            if (Math.abs(s.vy) < 0.4) s.vy = 0;
+            s.vx *= 0.8;
+            s.vAngle *= 0.4;
+
+            // Settle threshold: lock back to calm rest
+            if (Math.abs(s.vy) < 0.35 && Math.abs(s.vx) < 0.2) {
+              s.vy = 0;
+              s.vx = 0;
+              s.vAngle = 0;
+              s.y = h - r;
+              s.isAtRest = true;
+            }
           }
 
           // Top ceiling
           if (s.y - r < 0) {
             s.y = r;
             s.vy = -s.vy * floorBounce;
-            s.vAngle *= 0.8;
+            s.vAngle *= 0.5;
           }
 
           // Left wall
           if (s.x - r < 0) {
             s.x = r;
             s.vx = -s.vx * floorBounce;
-            s.vAngle *= 0.8;
+            s.vAngle *= 0.5;
           }
 
           // Right wall
           if (s.x + r > w) {
             s.x = w - r;
             s.vx = -s.vx * floorBounce;
-            s.vAngle *= 0.8;
+            s.vAngle *= 0.5;
           }
         }
       });
@@ -352,24 +355,26 @@ export const GravityShapesCanvas = () => {
             const velAlongNormal = vRelX * nx + vRelY * ny;
 
             if (velAlongNormal < 0) {
-              const restitution = 0.82;
+              const restitution = 0.25; // Gentle, muted collision bounce
               const impulse = -(1 + restitution) * velAlongNormal / (1 / s1.mass + 1 / s2.mass);
-              const dispersionMultiplier = 1.25;
+              const dispersionMultiplier = 0.9;
               const finalImpulse = impulse * dispersionMultiplier;
 
               const ix = finalImpulse * nx;
               const iy = finalImpulse * ny;
 
               if (!s1.isDragging) {
+                s1.isAtRest = false;
                 s1.vx -= ix / s1.mass;
                 s1.vy -= iy / s1.mass;
-                s1.vAngle -= (nx * vRelY - ny * vRelX) * 0.0025;
+                s1.vAngle -= (nx * vRelY - ny * vRelX) * 0.0006;
               }
 
               if (!s2.isDragging) {
+                s2.isAtRest = false;
                 s2.vx += ix / s2.mass;
                 s2.vy += iy / s2.mass;
-                s2.vAngle += (nx * vRelY - ny * vRelX) * 0.0025;
+                s2.vAngle += (nx * vRelY - ny * vRelX) * 0.0006;
               }
             }
           }
@@ -384,17 +389,10 @@ export const GravityShapesCanvas = () => {
 
         ctx.fillStyle = s.color;
         ctx.shadowColor = 'rgba(17, 19, 24, 0.08)';
-        ctx.shadowBlur = s.isDragging ? 26 : 10;
-        ctx.shadowOffsetY = s.isDragging ? 14 : 4;
+        ctx.shadowBlur = s.isDragging ? 22 : 8;
+        ctx.shadowOffsetY = s.isDragging ? 12 : 3;
 
-        if (s.type === 'huge-blob') {
-          // Draw the Huge Organic Green Shape with smooth organic contours
-          ctx.beginPath();
-          const hw = s.width / 2;
-          const hh = s.height / 2;
-          ctx.roundRect(-hw, -hh, s.width, s.height, [hw * 0.45, hw * 0.65, hw * 0.4, hw * 0.55]);
-          ctx.fill();
-        } else if (s.type === 'circle') {
+        if (s.type === 'circle') {
           ctx.beginPath();
           ctx.arc(0, 0, s.radius, 0, Math.PI * 2);
           ctx.fill();
@@ -440,6 +438,7 @@ export const GravityShapesCanvas = () => {
         if (isHit(pos, s)) {
           hit = true;
           s.isDragging = true;
+          s.isAtRest = false; // Awaken on user touch/click
           s.vx = 0;
           s.vy = 0;
           stateRef.current.draggedShape = s;
@@ -481,6 +480,7 @@ export const GravityShapesCanvas = () => {
       const dragged = stateRef.current.draggedShape;
       if (dragged) {
         dragged.isDragging = false;
+        dragged.isAtRest = false; // Allow release momentum to carry and bounce before resting
         dragged.vx = stateRef.current.mouseVelocity.x * 0.85;
         dragged.vy = stateRef.current.mouseVelocity.y * 0.85;
         dragged.vAngle = Math.max(-0.02, Math.min(0.02, (stateRef.current.mouseVelocity.x || 0) * 0.003));
