@@ -17,7 +17,6 @@ export const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { name: 'About', href: '#bio' },
     { name: 'Experiments', href: '#experiments' },
     { name: 'Connect', href: `mailto:${personal.email}` }
   ];
