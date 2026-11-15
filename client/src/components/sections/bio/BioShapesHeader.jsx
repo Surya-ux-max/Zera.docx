@@ -35,23 +35,6 @@ export const BioShapesHeader = () => {
 
   return (
     <div className="w-full max-w-6xl mx-auto py-8 sm:py-14 flex flex-col items-center justify-center select-none">
-      {/* ── Subtitle Spec Badge ── */}
-      <motion.div
-        initial={{ opacity: 0, y: -12 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.45 }}
-        className="mb-8 sm:mb-12 inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/90 backdrop-blur-xs border border-[var(--color-beige)] shadow-2xs"
-      >
-        <span className="flex h-2 w-2 relative">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--color-blue)] opacity-75" />
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--color-blue)]" />
-        </span>
-        <span className="text-[11px] font-mono uppercase tracking-widest text-[var(--color-muted)] font-medium">
-          02 // Profile Identity
-        </span>
-      </motion.div>
-
       {/* ── Interconnected Circles: Balanced, Spacious Overlap ── */}
       <div className="bio-shapes-wrapper -space-x-5 sm:-space-x-8 md:-space-x-12 lg:-space-x-14 px-4">
         {shapes.map((item, index) => {

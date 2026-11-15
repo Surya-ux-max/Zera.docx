@@ -1,15 +1,15 @@
 import React from 'react';
 import { BioShapesHeader } from './bio/BioShapesHeader';
 import { BioQuote } from './bio/BioQuote';
-import { BioAspiringHeadline } from './bio/kinetic/BioAspiringHeadline';
 import { GeometricShape } from '../common/GeometricShape';
 
 /**
  * BioSection
- * Bio section inspired by the hand-drawn concept:
+ * Clean Bio section:
  * - Massive overlapping circular shapes spelling "B - I - O" spanning left to right
- * - Expressive quote: "I am a Computer Science Student"
- * - Kinetic jumping letters forming "Aspiring Fullstack developer"
+ * - Kinetic jumping letters forming:
+ *   "I am a Computer Science and Engineering Student"
+ *   "Aspiring Fullstack developer"
  */
 export const BioSection = () => {
   return (
@@ -29,11 +29,8 @@ export const BioSection = () => {
         {/* ── 1. Massive B - I - O Overlapping Shapes Banner ── */}
         <BioShapesHeader />
 
-        {/* ── 2. Editorial Quote: "I am a Computer Science Student" ── */}
+        {/* ── 2. Kinetic Jumping Content: "I am a Computer Science and Engineering Student" & "Aspiring Fullstack developer" ── */}
         <BioQuote />
-
-        {/* ── 3. Kinetic Jumping Characters: "Aspiring Fullstack developer" ── */}
-        <BioAspiringHeadline />
       </div>
     </section>
   );
