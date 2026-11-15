@@ -3,10 +3,12 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowDown } from 'lucide-react';
 import GravityShapesCanvas from '../interactive/GravityShapesCanvas';
 import BulletTrainTypography from './BulletTrainTypography';
+import { LandingBackgroundShapes } from './landing/LandingBackgroundShapes';
 
 /**
  * LandingSection
  * Fullscreen hero featuring:
+ * - Ambient low-opacity Google Labs background shapes for spatial depth
  * - Interactive Google Labs geometric shapes with physics
  * - Looping Bullet Train kinetic typography
  * - Smooth scroll-driven page transition: typography scatters in left/right/up/down
@@ -29,9 +31,12 @@ export const LandingSection = () => {
       ref={containerRef}
       className="relative w-full h-screen min-h-[100dvh] max-w-full overflow-hidden bg-[#F3EFEA] flex items-center justify-center"
     >
-      {/* Interactive Movable Google Shapes Canvas with Gravity & Collision Dispersion */}
+      {/* ── 0. Low-Opaque Background Shapes for Visual Completeness & Spatial Depth ── */}
+      <LandingBackgroundShapes scrollYProgress={scrollYProgress} />
+
+      {/* ── 1. Interactive Movable Google Shapes Canvas with Gravity & Collision Dispersion ── */}
       <motion.div
-        className="absolute inset-0 w-full h-full pointer-events-auto"
+        className="absolute inset-0 w-full h-full pointer-events-auto z-10"
         style={{
           opacity: canvasOpacity,
           y: canvasY,
@@ -41,10 +46,10 @@ export const LandingSection = () => {
         <GravityShapesCanvas />
       </motion.div>
 
-      {/* Massive Bullet Train Looping Typography with Scroll Scatter Transition */}
+      {/* ── 2. Massive Bullet Train Looping Typography with Scroll Scatter Transition ── */}
       <BulletTrainTypography scrollYProgress={scrollYProgress} />
 
-      {/* ── Mobile & Desktop Scroll Prompt ── */}
+      {/* ── 3. Mobile & Desktop Scroll Prompt ── */}
       <a
         href="#bio"
         className="absolute bottom-5 sm:bottom-8 z-30 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/85 hover:bg-white backdrop-blur-xs border border-[var(--color-beige)] text-[11px] font-mono text-[var(--color-muted)] hover:text-[var(--color-text)] transition-all shadow-xs cursor-pointer select-none"

@@ -205,7 +205,9 @@ export const GravityShapesCanvas = () => {
     const gravity = 0.32;
     const friction = 0.95;
     const angularDamping = 0.78;
-    const floorBounce = 0.22;
+    const floorBounce = 0.50; // Increased floor bounce for responsive, satisfying rebounds
+    const settleThresholdY = 0.85; // Increased settle velocity threshold for clean rest snap
+    const settleThresholdX = 0.45;
 
     // Helper: Draw rounded hexagon
     const drawRoundedHexagon = (c, r, cr) => {
@@ -279,15 +281,15 @@ export const GravityShapesCanvas = () => {
 
           const r = s.hitRadius;
 
-          // Bottom floor (gentle muted bounce; settles to rest quickly)
+          // Bottom floor (increased floor bounce; snaps to calm rest once below threshold)
           if (s.y + r >= h) {
             s.y = h - r;
             s.vy = -s.vy * floorBounce;
             s.vx *= 0.8;
             s.vAngle *= 0.4;
 
-            // Settle threshold: lock back to calm rest
-            if (Math.abs(s.vy) < 0.35 && Math.abs(s.vx) < 0.2) {
+            // Settle threshold: decisively lock back to calm rest
+            if (Math.abs(s.vy) < settleThresholdY && Math.abs(s.vx) < settleThresholdX) {
               s.vy = 0;
               s.vx = 0;
               s.vAngle = 0;
