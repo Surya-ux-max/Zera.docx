@@ -1,7 +1,6 @@
 import React from 'react';
 import LandingSection from './components/sections/LandingSection';
 import BioSection from './components/sections/BioSection';
-import SkillsSection from './components/sections/skills/SkillsSection';
 
 export function App() {
   return (
@@ -9,7 +8,6 @@ export function App() {
       <main>
         <LandingSection />
         <BioSection />
-        <SkillsSection />
       </main>
     </div>
   );

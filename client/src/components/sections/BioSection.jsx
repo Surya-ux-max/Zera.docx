@@ -1,5 +1,4 @@
 import React from 'react';
-import { ArrowDown } from 'lucide-react';
 import { BioShapesHeader } from './bio/BioShapesHeader';
 import { BioQuote } from './bio/BioQuote';
 import { GeometricShape } from '../common/GeometricShape';
@@ -32,17 +31,6 @@ export const BioSection = () => {
 
         {/* ── 2. Kinetic Jumping Content: "I am a Computer Science and Engineering Student" & "Aspiring Fullstack developer" ── */}
         <BioQuote />
-
-        {/* ── 3. Scroll Cue to 3D Skills Tunnel Gallery ── */}
-        <a
-          href="#skills"
-          className="mt-8 sm:mt-12 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/85 hover:bg-white text-xs font-mono text-[var(--color-muted)] hover:text-[var(--color-text)] transition-all border border-[var(--color-beige)] shadow-xs select-none"
-          aria-label="Scroll to 3D Skills Tunnel Gallery"
-        >
-          <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D6D] animate-pulse" />
-          <span>Next: 3D Skills Tunnel Gallery</span>
-          <ArrowDown className="w-3.5 h-3.5 text-[var(--color-muted)] animate-bounce" />
-        </a>
       </div>
     </section>
   );
