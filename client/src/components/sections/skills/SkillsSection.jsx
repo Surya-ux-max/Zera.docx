@@ -2,15 +2,13 @@ import React, { useRef, useState } from 'react';
 import { motion, useScroll, useSpring, useMotionValueEvent } from 'framer-motion';
 import { skillsData } from './skillsData';
 import { SkillsTunnelBackground } from './SkillsTunnelBackground';
-import { SkillsHeader } from './SkillsHeader';
-import { SkillsInfoPanel } from './SkillsInfoPanel';
 import { SkillsTunnelGallery } from './SkillsTunnelGallery';
 
 /**
  * SkillsSection
- * Cinematic 3D Scroll-Driven Image Tunnel Gallery.
- * Orchestrates pinned/sticky scroll container, 3D tunnel gallery,
- * concentric backgrounds, synchronized info panel, and horizontal progress indicator.
+ * Clean, full-bleed Cinematic 3D Scroll-Driven Tunnel Gallery.
+ * Left-side content removed — the cards speak for themselves.
+ * Centered cylindrical tunnel with smooth scroll roll and bottom progress bar.
  */
 export const SkillsSection = () => {
   const containerRef = useRef(null);
@@ -22,11 +20,11 @@ export const SkillsSection = () => {
     offset: ['start start', 'end end']
   });
 
-  // Smooth continuous spring physics for frictionless 3D travel
+  // Smooth spring physics for continuous, frictionless 3D travel
   const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 120,
-    damping: 24,
-    mass: 0.6,
+    stiffness: 110,
+    damping: 22,
+    mass: 0.5,
     restDelta: 0.0001
   });
 
@@ -55,25 +53,36 @@ export const SkillsSection = () => {
     });
   };
 
+  const activeSkill = skillsData[activeIndex];
+
   return (
     <section
       ref={containerRef}
       id="skills"
       className="relative w-full bg-[#1D1D1F] text-[#F5F5F7] select-none selection:bg-[#FF4D6D] selection:text-white"
       style={{ height: '420vh' }}
-      aria-label="Skills & Frameworks 3D Tunnel Gallery"
+      aria-label="Skills 3D Tunnel Gallery"
     >
       {/* ── Sticky Fullscreen Viewport Layer ── */}
       <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between">
-        {/* 1. Atmospheric Dark Background & Concentric Burgundy/Pink Tunnel Rings */}
+        {/* 1. Atmospheric Dark Background & Centered Concentric Burgundy/Pink Tunnel Rings */}
         <SkillsTunnelBackground />
 
-        {/* 2. Upper-Left Visual Layer: Editorial Header & Coral CTA */}
-        <div className="relative z-30 w-full flex justify-between items-start">
-          <SkillsHeader onExploreClick={() => handleScrollToCard(1)} />
+        {/* 2. Top Minimal Tunnel Eyebrow & Sequence Indicator */}
+        <div className="relative z-30 w-full flex items-center justify-between pt-6 sm:pt-8 px-6 sm:px-12 pointer-events-none">
+          <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-xs font-mono tracking-widest text-[#FF758F] uppercase">
+            <span className="w-2 h-2 rounded-full bg-[#FF4D6D] animate-ping" />
+            <span>3D Skills Tunnel</span>
+          </div>
+
+          <div className="flex items-center gap-3 font-mono text-xs sm:text-sm text-neutral-400 bg-white/5 px-3.5 py-1.5 rounded-full border border-white/10 backdrop-blur-md">
+            <span className="text-white font-bold">{activeSkill?.sequenceFull}</span>
+            <span className="w-1 h-1 rounded-full bg-neutral-600" />
+            <span className="text-neutral-300 hidden min-[480px]:inline">{activeSkill?.name}</span>
+          </div>
         </div>
 
-        {/* 3. Central Visual Layer: Signature 3D Cylindrical Tunnel Gallery */}
+        {/* 3. Central 3D Cylindrical Spiral Tunnel Gallery */}
         <SkillsTunnelGallery
           skills={skillsData}
           virtualIndex={virtualIndex}
@@ -81,26 +90,26 @@ export const SkillsSection = () => {
           onCardClick={handleScrollToCard}
         />
 
-        {/* 4. Bottom-Left Visual Layer: Active Skill Info & Framework Badges */}
-        <div className="relative z-30 w-full flex justify-between items-end">
-          <SkillsInfoPanel
-            activeSkill={skillsData[activeIndex]}
-            activeIndex={activeIndex}
-            total={total}
-          />
+        {/* 4. Bottom Nav Bar: Interactive Dots & Scroll Hint */}
+        <div className="relative z-30 w-full flex items-center justify-between pb-6 sm:pb-8 px-6 sm:px-12 pointer-events-auto">
+          {/* Subtle Scroll Traverse Cue */}
+          <div className="text-[11px] font-mono tracking-wider text-neutral-500 uppercase flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-neutral-600" />
+            <span>Scroll to traverse tunnel</span>
+          </div>
 
-          {/* Quick Jump Dot Nav (Bottom-Right on Desktop) */}
-          <div className="hidden md:flex items-center gap-2 pb-6 sm:pb-8 md:pb-12 px-8 z-30 pointer-events-auto">
+          {/* Jump Dots */}
+          <div className="flex items-center gap-2">
             {skillsData.map((s, idx) => (
               <button
                 key={s.id}
                 onClick={() => handleScrollToCard(idx)}
                 className={`transition-all duration-300 rounded-full cursor-pointer ${
                   idx === activeIndex
-                    ? 'w-7 h-2 bg-[#FF4D6D] shadow-[0_0_10px_#FF4D6D]'
+                    ? 'w-7 h-2 bg-[#FF4D6D] shadow-[0_0_12px_#FF4D6D]'
                     : 'w-2 h-2 bg-white/20 hover:bg-white/40'
                 }`}
-                aria-label={`Jump to ${s.title}`}
+                aria-label={`Jump to ${s.name}`}
               />
             ))}
           </div>
