@@ -212,6 +212,21 @@ h2,
   }
 }
 
+/* ==========================================================================
+   Cinematic 3D Scroll-Driven Tunnel Gallery Styles
+   ========================================================================== */
+.tunnel-perspective-stage {
+  perspective: 1200px;
+  perspective-origin: 55% 50%;
+  transform-style: preserve-3d;
+}
+
+.tunnel-card-preserve-3d {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  will-change: transform, opacity, filter;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
